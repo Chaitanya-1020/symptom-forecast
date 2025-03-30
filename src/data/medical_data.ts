@@ -1,13 +1,8 @@
 
-// This represents our "CSV data" in a structured format
-export interface DiseaseData {
-  disease: string;
-  symptoms: string[];
-  prevalence: number; // A number between 0-100 representing how common the disease is
-}
+import type { Disease, Symptom } from '../types';
 
-// This would typically come from a CSV file in a real backend
-export const medicalData: DiseaseData[] = [
+// Sample medical data (this would be replaced by data from the Python analysis)
+const medicalData: Disease[] = [
   {
     disease: "Common Cold",
     symptoms: ["Cough", "Runny Nose", "Sore Throat", "Sneezing", "Headache", "Fatigue"],
@@ -70,51 +65,106 @@ export const medicalData: DiseaseData[] = [
   }
 ];
 
-// Extract all unique symptoms from the data
-export const getAllSymptoms = (): string[] => {
-  const symptomSet = new Set<string>();
+/**
+ * Get a list of all unique symptoms from the medical data
+ */
+export function getAllSymptoms(): string[] {
+  // Extract all symptoms and deduplicate
+  const allSymptoms = new Set<string>();
+  
   medicalData.forEach(disease => {
     disease.symptoms.forEach(symptom => {
-      symptomSet.add(symptom);
+      allSymptoms.add(symptom);
     });
   });
-  return Array.from(symptomSet).sort();
-};
+  
+  // Convert to array and sort alphabetically
+  return Array.from(allSymptoms).sort();
+}
 
-// Calculate disease probabilities based on selected symptoms
-export const calculateDiseaseProbabilities = (selectedSymptoms: string[]): { disease: string; probability: number; matchedSymptoms: number; totalSymptoms: number }[] => {
-  if (selectedSymptoms.length === 0) return [];
-
-  return medicalData.map(disease => {
-    // Count how many symptoms match
+/**
+ * Calculate disease probabilities based on symptoms
+ * @param selectedSymptoms - Array of symptoms selected by user
+ * @returns Array of objects with disease, probability, and symptom match info
+ */
+export function calculateDiseaseProbabilities(selectedSymptoms: string[]): Array<{
+  disease: string;
+  probability: number;
+  matchedSymptoms: number;
+  totalSymptoms: number;
+}> {
+  if (!selectedSymptoms.length) return [];
+  
+  // Calculate match percentages for each disease
+  const results = medicalData.map(disease => {
+    // Count how many of the selected symptoms match this disease
     const matchedSymptoms = disease.symptoms.filter(symptom => 
       selectedSymptoms.includes(symptom)
     ).length;
-
-    // Calculate a basic probability based on symptom match ratio and disease prevalence
-    // This is a simple algorithm and could be improved with actual medical data
-    const matchRatio = matchedSymptoms / disease.symptoms.length;
-    const selectedRatio = matchedSymptoms / selectedSymptoms.length;
     
-    // Weigh the probability based on both ratios and disease prevalence
-    const probability = (matchRatio * 0.6 + selectedRatio * 0.4) * (disease.prevalence / 100);
+    // Calculate two factors:
+    // 1. What percentage of this disease's symptoms were matched
+    const percentOfDiseaseSymptoms = matchedSymptoms / disease.symptoms.length;
     
-    // Scale to a percentage and round to 2 decimal places
-    const scaledProbability = Math.round(probability * 100 * 100) / 100;
-
+    // 2. What percentage of selected symptoms were matched
+    const percentOfSelectedSymptoms = matchedSymptoms / selectedSymptoms.length;
+    
+    // Combined probability calculation
+    // We weight these factors and also consider the base prevalence
+    const baseProbability = (percentOfDiseaseSymptoms * 0.5) + (percentOfSelectedSymptoms * 0.5);
+    
+    // Adjust by the disease prevalence (normalized to 0-1)
+    const adjustedProbability = baseProbability * (disease.prevalence / 100);
+    
+    // Scale to percentage (0-100)
+    const scaledProbability = Math.round(adjustedProbability * 100);
+    
     return {
       disease: disease.disease,
       probability: scaledProbability,
-      matchedSymptoms,
+      matchedSymptoms: matchedSymptoms,
       totalSymptoms: disease.symptoms.length
     };
-  }).sort((a, b) => b.probability - a.probability); // Sort by probability desc
-};
-
-// Get the top prediction
-export const getPrediction = (selectedSymptoms: string[]): string => {
-  if (selectedSymptoms.length === 0) return "No symptoms selected";
+  });
   
-  const probabilities = calculateDiseaseProbabilities(selectedSymptoms);
-  return probabilities.length > 0 ? probabilities[0].disease : "Unable to determine";
-};
+  // Sort by probability (highest first) and filter out zero probability
+  return results
+    .filter(item => item.probability > 0)
+    .sort((a, b) => b.probability - a.probability);
+}
+
+/**
+ * Get detailed information about a specific disease
+ * @param diseaseName - Name of the disease to look up
+ * @returns Disease object or null if not found
+ */
+export function getDiseaseDetails(diseaseName: string): Disease | null {
+  return medicalData.find(d => d.disease === diseaseName) || null;
+}
+
+/**
+ * Get symptoms associated with a specific disease
+ * @param diseaseName - Name of the disease to look up
+ * @returns Array of symptoms or empty array if disease not found
+ */
+export function getDiseaseSymptoms(diseaseName: string): string[] {
+  const disease = getDiseaseDetails(diseaseName);
+  return disease ? disease.symptoms : [];
+}
+
+/**
+ * Find diseases that share specific symptoms
+ * @param symptomList - List of symptoms to match
+ * @returns Array of disease names that have at least one matching symptom
+ */
+export function findDiseasesBySymptoms(symptomList: string[]): string[] {
+  if (!symptomList.length) return [];
+  
+  return medicalData
+    .filter(disease => 
+      disease.symptoms.some(symptom => symptomList.includes(symptom))
+    )
+    .map(disease => disease.disease);
+}
+
+export type { Disease, Symptom };

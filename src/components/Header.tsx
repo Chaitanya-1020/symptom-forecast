@@ -1,17 +1,41 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { ActivitySquare, ChartBar } from 'lucide-react';
 
 const Header = () => {
   return (
-    <header className="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-6 shadow-md">
-      <div className="container mx-auto flex flex-col items-center justify-between md:flex-row">
-        <div className="flex items-center mb-4 md:mb-0">
-          <h1 className="text-2xl font-bold">MediPredictor</h1>
-          <span className="ml-2 bg-white text-blue-600 px-2 py-1 rounded-md text-xs font-medium">BETA</span>
+    <header className="bg-blue-600 shadow-md">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex items-center mb-4 md:mb-0">
+            <ActivitySquare className="h-7 w-7 text-white mr-2" />
+            <h1 className="text-2xl font-bold text-white">MediPredictor</h1>
+          </div>
+          
+          <nav>
+            <ul className="flex space-x-6">
+              <li>
+                <Link 
+                  to="/" 
+                  className="text-white hover:text-blue-200 transition-colors font-medium flex items-center"
+                >
+                  <ActivitySquare className="h-4 w-4 mr-1" />
+                  Predict
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/analysis" 
+                  className="text-white hover:text-blue-200 transition-colors font-medium flex items-center"
+                >
+                  <ChartBar className="h-4 w-4 mr-1" />
+                  Analysis
+                </Link>
+              </li>
+            </ul>
+          </nav>
         </div>
-        <p className="text-sm opacity-90 text-center md:text-right">
-          Predictive disease analysis based on symptoms
-        </p>
       </div>
     </header>
   );
