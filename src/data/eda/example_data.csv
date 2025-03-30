@@ -2,13 +2,19 @@
 disease,symptoms,prevalence
 Common Cold,"Cough,Runny Nose,Sore Throat,Sneezing,Headache,Fatigue",78
 Influenza,"High Fever,Cough,Fatigue,Body Aches,Headache,Chills",65
-COVID-19,"Fever,Dry Cough,Fatigue,Loss of Taste/Smell,Shortness of Breath,Body Aches",60
+Pneumonia,"High Fever,Cough with Phlegm,Shortness of Breath,Chest Pain,Fatigue,Confusion",25
+Tuberculosis,"Persistent Cough,Blood in Cough,Weight Loss,Night Sweats,Fatigue,Chest Pain",20
 Allergic Rhinitis,"Sneezing,Runny Nose,Itchy Eyes,Nasal Congestion,Watery Eyes",45
 Sinusitis,"Facial Pain,Nasal Congestion,Headache,Thick Nasal Discharge,Reduced Sense of Smell",40
 Bronchitis,"Persistent Cough,Mucus Production,Fatigue,Shortness of Breath,Chest Discomfort",35
 Asthma,"Wheezing,Shortness of Breath,Chest Tightness,Coughing,Difficulty Breathing",32
-Pneumonia,"High Fever,Cough with Phlegm,Shortness of Breath,Chest Pain,Fatigue,Confusion",25
 Gastroenteritis,"Nausea,Vomiting,Diarrhea,Stomach Cramps,Fever,Headache",55
 Migraine,"Severe Headache,Nausea,Light Sensitivity,Sound Sensitivity,Visual Disturbances",42
 Urinary Tract Infection,"Frequent Urination,Burning Sensation,Cloudy Urine,Strong Odor,Pelvic Pain",38
 Food Poisoning,"Nausea,Vomiting,Diarrhea,Abdominal Pain,Fever,Dehydration",50
+Hypertension,"Headache,Shortness of Breath,Dizziness,Chest Pain,Vision Problems",30
+Diabetes,"Frequent Urination,Excessive Thirst,Hunger,Fatigue,Blurred Vision,Slow Healing",28
+Anemia,"Fatigue,Weakness,Pale Skin,Shortness of Breath,Dizziness,Cold Hands and Feet",22
+Hyperthyroidism,"Weight Loss,Rapid Heartbeat,Increased Appetite,Nervousness,Sweating,Fatigue",18
+Hypothyroidism,"Fatigue,Weight Gain,Cold Sensitivity,Dry Skin,Depression,Constipation",19
+GERD,"Heartburn,Regurgitation,Chest Pain,Difficulty Swallowing,Sore Throat",33

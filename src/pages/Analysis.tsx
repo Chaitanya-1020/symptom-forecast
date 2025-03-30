@@ -3,10 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { InfoIcon, FileSpreadsheet, BarChart4, LineChart } from 'lucide-react';
+import { InfoIcon, FileSpreadsheet, BarChart4, LineChart, PieChart as PieChartIcon, NetworkIcon, RadarIcon, ScatterChart } from 'lucide-react';
 import Header from '@/components/Header';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
-         PieChart, Pie, Cell } from 'recharts';
+         PieChart, Pie, Cell, LineChart as RechartsLineChart, Line, 
+         RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+         ScatterChart as RechartsScatterChart, Scatter } from 'recharts';
 
 const Analysis = () => {
   const [loading, setLoading] = useState(true);
@@ -14,6 +16,7 @@ const Analysis = () => {
   const [statistics, setStatistics] = useState<any>(null);
   const [symptomFrequency, setSymptomFrequency] = useState<any[]>([]);
   const [diseasePrevalence, setDiseasePrevalence] = useState<any[]>([]);
+  const [symptomRelationship, setSymptomRelationship] = useState<any[]>([]);
   
   useEffect(() => {
     // This would normally load data from the Python analysis
@@ -24,38 +27,54 @@ const Analysis = () => {
       try {
         // Sample statistics data (would come from the Python backend)
         setStatistics({
-          disease_count: 12,
-          unique_symptoms: 45,
-          top_symptoms: ["Cough", "Fever", "Fatigue", "Headache", "Nausea"],
-          mean_prevalence: 47.5,
-          min_prevalence: 25,
+          disease_count: 18, // Updated to match our data
+          unique_symptoms: 60, // Increased for our larger dataset
+          top_symptoms: ["Fatigue", "Headache", "Cough", "Fever", "Nausea", "Shortness of Breath", "Dizziness"],
+          mean_prevalence: 35.6,
+          min_prevalence: 18,
           max_prevalence: 78
         });
         
         // Sample symptom frequency data
         setSymptomFrequency([
-          { name: "Cough", frequency: 4 },
-          { name: "Fever", frequency: 3 },
-          { name: "Headache", frequency: 3 },
-          { name: "Fatigue", frequency: 3 },
-          { name: "Nausea", frequency: 2 },
-          { name: "Vomiting", frequency: 2 },
-          { name: "Shortness of Breath", frequency: 2 },
-          { name: "Sore Throat", frequency: 1 },
-          { name: "Body Aches", frequency: 1 },
-          { name: "Diarrhea", frequency: 1 }
+          { name: "Fatigue", frequency: 10 },
+          { name: "Headache", frequency: 7 },
+          { name: "Cough", frequency: 6 },
+          { name: "Fever", frequency: 5 },
+          { name: "Nausea", frequency: 5 },
+          { name: "Shortness of Breath", frequency: 5 },
+          { name: "Dizziness", frequency: 4 },
+          { name: "Vomiting", frequency: 3 },
+          { name: "Weight Loss", frequency: 3 },
+          { name: "Chest Pain", frequency: 3 },
+          { name: "Sore Throat", frequency: 2 },
+          { name: "Runny Nose", frequency: 2 }
         ]);
         
-        // Sample disease prevalence data
+        // Sample disease prevalence data (updated with our diseases)
         setDiseasePrevalence([
           { name: "Common Cold", value: 78 },
           { name: "Influenza", value: 65 },
-          { name: "COVID-19", value: 60 },
           { name: "Gastroenteritis", value: 55 },
           { name: "Food Poisoning", value: 50 },
           { name: "Allergic Rhinitis", value: 45 },
           { name: "Migraine", value: 42 },
-          { name: "Sinusitis", value: 40 }
+          { name: "Sinusitis", value: 40 },
+          { name: "Urinary Tract Infection", value: 38 },
+          { name: "Bronchitis", value: 35 },
+          { name: "GERD", value: 33 }
+        ]);
+
+        // Sample symptom relationship data
+        setSymptomRelationship([
+          { symptom: "Headache", cooccurrence: 8, impact: 75 },
+          { symptom: "Fatigue", cooccurrence: 10, impact: 65 },
+          { symptom: "Fever", cooccurrence: 5, impact: 85 },
+          { symptom: "Cough", cooccurrence: 6, impact: 70 },
+          { symptom: "Nausea", cooccurrence: 5, impact: 60 },
+          { symptom: "Chest Pain", cooccurrence: 3, impact: 90 },
+          { symptom: "Shortness of Breath", cooccurrence: 5, impact: 80 },
+          { symptom: "Dizziness", cooccurrence: 4, impact: 55 }
         ]);
         
         setLoading(false);
@@ -68,7 +87,11 @@ const Analysis = () => {
     return () => clearTimeout(timer);
   }, []);
   
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#4ECDC4', '#C7F464', '#FF6B6B'];
+  const COLORS = [
+    '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', 
+    '#4ECDC4', '#C7F464', '#FF6B6B', '#845EC2', '#D65DB1',
+    '#FFC75F', '#F9F871', '#B39CD0'
+  ];
   
   if (loading) {
     return (
@@ -170,8 +193,9 @@ const Analysis = () => {
             <CardContent>
               <Tabs defaultValue="bar">
                 <TabsList className="mb-4">
-                  <TabsTrigger value="bar">Bar Chart</TabsTrigger>
-                  <TabsTrigger value="pie">Pie Chart</TabsTrigger>
+                  <TabsTrigger value="bar">Bar</TabsTrigger>
+                  <TabsTrigger value="pie">Pie</TabsTrigger>
+                  <TabsTrigger value="radar">Radar</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="bar">
@@ -221,6 +245,31 @@ const Analysis = () => {
                     </ResponsiveContainer>
                   </div>
                 </TabsContent>
+
+                <TabsContent value="radar">
+                  <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RadarChart 
+                        cx="50%" 
+                        cy="50%" 
+                        outerRadius={100} 
+                        data={symptomFrequency.slice(0, 8)} // Limit to 8 for readability
+                      >
+                        <PolarGrid />
+                        <PolarAngleAxis dataKey="name" />
+                        <PolarRadiusAxis />
+                        <Radar 
+                          name="Frequency" 
+                          dataKey="frequency" 
+                          stroke="#8884d8" 
+                          fill="#8884d8" 
+                          fillOpacity={0.6} 
+                        />
+                        <Tooltip />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
@@ -228,7 +277,7 @@ const Analysis = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <LineChart className="mr-2 h-5 w-5" />
+                <PieChartIcon className="mr-2 h-5 w-5" />
                 Disease Prevalence
               </CardTitle>
               <CardDescription>
@@ -238,8 +287,9 @@ const Analysis = () => {
             <CardContent>
               <Tabs defaultValue="bar">
                 <TabsList className="mb-4">
-                  <TabsTrigger value="bar">Bar Chart</TabsTrigger>
-                  <TabsTrigger value="pie">Pie Chart</TabsTrigger>
+                  <TabsTrigger value="bar">Bar</TabsTrigger>
+                  <TabsTrigger value="pie">Pie</TabsTrigger>
+                  <TabsTrigger value="line">Line</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="bar">
@@ -286,6 +336,132 @@ const Analysis = () => {
                         </Pie>
                         <Tooltip formatter={(value) => [`${value}%`, 'Prevalence']} />
                       </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="line">
+                  <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RechartsLineChart
+                        data={diseasePrevalence}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 70 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis 
+                          dataKey="name" 
+                          tick={{ fontSize: 12 }}
+                          angle={-45}
+                          textAnchor="end"
+                          height={70}
+                        />
+                        <YAxis />
+                        <Tooltip formatter={(value) => [`${value}%`, 'Prevalence']} />
+                        <Legend />
+                        <Line type="monotone" dataKey="value" stroke="#4285F4" name="Prevalence (%)" />
+                      </RechartsLineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <NetworkIcon className="mr-2 h-5 w-5" />
+                Symptom Relationship Analysis
+              </CardTitle>
+              <CardDescription>
+                Co-occurrence and impact of common symptoms
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="scatter">
+                <TabsList className="mb-4">
+                  <TabsTrigger value="scatter">Scatter</TabsTrigger>
+                  <TabsTrigger value="combined">Combined</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="scatter">
+                  <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RechartsScatterChart
+                        margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis 
+                          type="number" 
+                          dataKey="cooccurrence" 
+                          name="Co-occurrence" 
+                          label={{ value: 'Co-occurrence', position: 'insideBottom', offset: -5 }}
+                        />
+                        <YAxis 
+                          type="number" 
+                          dataKey="impact" 
+                          name="Impact Score" 
+                          label={{ value: 'Impact Score', angle: -90, position: 'insideLeft' }}
+                        />
+                        <Tooltip 
+                          cursor={{ strokeDasharray: '3 3' }}
+                          content={({ active, payload }) => {
+                            if (active && payload && payload.length) {
+                              const data = payload[0].payload;
+                              return (
+                                <div className="bg-white p-2 border rounded shadow-md">
+                                  <p className="font-bold">{data.symptom}</p>
+                                  <p>Co-occurrence: {data.cooccurrence}</p>
+                                  <p>Impact Score: {data.impact}</p>
+                                </div>
+                              );
+                            }
+                            return null;
+                          }}
+                        />
+                        <Legend />
+                        <Scatter 
+                          name="Symptoms" 
+                          data={symptomRelationship} 
+                          fill="#8884d8"
+                          shape="circle"
+                        >
+                          {symptomRelationship.map((entry, index) => (
+                            <Cell 
+                              key={`cell-${index}`} 
+                              fill={COLORS[index % COLORS.length]} 
+                            />
+                          ))}
+                        </Scatter>
+                      </RechartsScatterChart>
+                    </ResponsiveContainer>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="combined">
+                  <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={symptomRelationship}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 70 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis 
+                          dataKey="symptom" 
+                          tick={{ fontSize: 12 }}
+                          angle={-45}
+                          textAnchor="end"
+                          height={70}
+                        />
+                        <YAxis yAxisId="left" orientation="left" />
+                        <YAxis yAxisId="right" orientation="right" />
+                        <Tooltip />
+                        <Legend />
+                        <Bar yAxisId="left" dataKey="cooccurrence" fill="#8884d8" name="Co-occurrence" />
+                        <Bar yAxisId="right" dataKey="impact" fill="#82ca9d" name="Impact Score" />
+                      </BarChart>
                     </ResponsiveContainer>
                   </div>
                 </TabsContent>

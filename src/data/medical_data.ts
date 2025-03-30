@@ -1,4 +1,3 @@
-
 import type { Disease, Symptom } from '../types';
 
 // Sample medical data (this would be replaced by data from the Python analysis)
@@ -14,9 +13,14 @@ const medicalData: Disease[] = [
     prevalence: 65
   },
   {
-    disease: "COVID-19",
-    symptoms: ["Fever", "Dry Cough", "Fatigue", "Loss of Taste/Smell", "Shortness of Breath", "Body Aches"],
-    prevalence: 60
+    disease: "Pneumonia",
+    symptoms: ["High Fever", "Cough with Phlegm", "Shortness of Breath", "Chest Pain", "Fatigue", "Confusion"],
+    prevalence: 25
+  },
+  {
+    disease: "Tuberculosis",
+    symptoms: ["Persistent Cough", "Blood in Cough", "Weight Loss", "Night Sweats", "Fatigue", "Chest Pain"],
+    prevalence: 20
   },
   {
     disease: "Allergic Rhinitis",
@@ -39,11 +43,6 @@ const medicalData: Disease[] = [
     prevalence: 32
   },
   {
-    disease: "Pneumonia",
-    symptoms: ["High Fever", "Cough with Phlegm", "Shortness of Breath", "Chest Pain", "Fatigue", "Confusion"],
-    prevalence: 25
-  },
-  {
     disease: "Gastroenteritis",
     symptoms: ["Nausea", "Vomiting", "Diarrhea", "Stomach Cramps", "Fever", "Headache"],
     prevalence: 55
@@ -62,6 +61,36 @@ const medicalData: Disease[] = [
     disease: "Food Poisoning",
     symptoms: ["Nausea", "Vomiting", "Diarrhea", "Abdominal Pain", "Fever", "Dehydration"],
     prevalence: 50
+  },
+  {
+    disease: "Hypertension",
+    symptoms: ["Headache", "Shortness of Breath", "Dizziness", "Chest Pain", "Vision Problems"],
+    prevalence: 30
+  },
+  {
+    disease: "Diabetes",
+    symptoms: ["Frequent Urination", "Excessive Thirst", "Hunger", "Fatigue", "Blurred Vision", "Slow Healing"],
+    prevalence: 28
+  },
+  {
+    disease: "Anemia",
+    symptoms: ["Fatigue", "Weakness", "Pale Skin", "Shortness of Breath", "Dizziness", "Cold Hands and Feet"],
+    prevalence: 22
+  },
+  {
+    disease: "Hyperthyroidism",
+    symptoms: ["Weight Loss", "Rapid Heartbeat", "Increased Appetite", "Nervousness", "Sweating", "Fatigue"],
+    prevalence: 18
+  },
+  {
+    disease: "Hypothyroidism",
+    symptoms: ["Fatigue", "Weight Gain", "Cold Sensitivity", "Dry Skin", "Depression", "Constipation"],
+    prevalence: 19
+  },
+  {
+    disease: "GERD",
+    symptoms: ["Heartburn", "Regurgitation", "Chest Pain", "Difficulty Swallowing", "Sore Throat"],
+    prevalence: 33
   }
 ];
 
@@ -167,4 +196,4 @@ export function findDiseasesBySymptoms(symptomList: string[]): string[] {
     .map(disease => disease.disease);
 }
 
-export type { Disease, Symptom };
+export { Disease, Symptom };
